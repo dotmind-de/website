@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://dotmind.de/sitemap.xml
