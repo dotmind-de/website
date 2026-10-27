@@ -493,6 +493,7 @@ The JS budget includes the React 19 + Next 16 runtime, which is the bulk of it. 
 | Instrument Serif Italic | `weight: "400", style: ["italic"]` | **no** | Accent words only; `display: "swap"` + `adjustFontFallback` (default) keep CLS low |
 | IBM Plex Sans Arabic (`ar`) | `subsets: ["arabic"], weight: ["400","500","600"]` | no | Phase 3; class applied only when `lang === "ar"` |
 | Vazirmatn (`fa`) | `subsets: ["arabic"]` (variable) | no | Phase 3; only when `lang === "fa"` |
+| Parastoo (`fa` accent) / Markazi Text (`ar` accent) | `subsets: ["arabic"]` (variable), `--font-script-serif` | no | `serif-accent` on RTL routes only |
 
 Fonts must be declared at module scope. Declare the Arabic and Persian fonts in `src/i18n/fonts.ts` with `preload: false`, and apply their `variable` class to `<html>` only for those locales. A `@font-face` rule that no element uses never downloads. Verify that `de` pages make no Arabic font request (UX §8.4).
 

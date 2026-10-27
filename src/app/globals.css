@@ -469,7 +469,8 @@ html.has-custom-cursor :is(input, textarea, select, [contenteditable]) {
 
 /* ───────────────────────── Right-to-left (Persian, Arabic) ─────────────────────────
    Arabic script is cursive: any tracking breaks the joins, uppercase and italics don't
-   exist, and it needs more line height. The serif accent becomes ember-coloured weight. */
+   exist, and it needs more line height. The serif accent becomes a Naskh face (Parastoo for
+   Persian, Markazi Text for Arabic), set 8 % larger because Naskh has a smaller eye than the sans. */
 :root[dir="rtl"] body {
   font-family: var(--font-script), var(--font-geist), ui-sans-serif, system-ui, sans-serif;
   line-height: 1.8;
@@ -488,7 +489,8 @@ html.has-custom-cursor :is(input, textarea, select, [contenteditable]) {
   text-transform: none;
 }
 :root[dir="rtl"] .serif-accent {
-  font-family: var(--font-script), var(--font-instrument-serif), serif;
+  font-family: var(--font-script-serif), var(--font-script), var(--font-instrument-serif), serif;
   font-style: normal;
-  font-weight: 700;
+  font-weight: 600;
+  font-size: 1.08em;
 }

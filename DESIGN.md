@@ -65,6 +65,7 @@ Warm "tungsten" accent on near-black evokes film light rather than neon.
 | Display + body | **Geist** (300–700) | Display 600, tracking −0.045em, leading 0.9. Body 400, 16–18px, leading 1.65. |
 | Labels / metadata | **Geist Mono** (same super-family) | 11–12px uppercase, +0.14em tracking. |
 | Editorial accent | **Instrument Serif Italic** | One or two words per heading only. |
+| Persian / Arabic | **Vazirmatn** (fa) / **IBM Plex Sans Arabic** (ar), accent **Parastoo** (fa) / **Markazi Text** (ar) | Loaded only on their own routes; Latin runs stay in Geist. Accent is upright Naskh, weight 600, 1.08 em. Rationale: `UX-DIRECTION.md` (RTL). |
 
 Fluid scale (`globals.css`): `t-display` → `t-h1` → `t-h2` → `t-h3` → `t-lead` → body → `t-label`.
 

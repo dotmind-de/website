@@ -842,6 +842,10 @@ Pair with Geist's neutral, slightly geometric grotesk. Both families are on Goog
 | --- | --- | --- |
 | `ar` | **IBM Plex Sans Arabic** (300–700) | Rational, low-contrast Naskh-influenced sans; reads as "engineered" like Geist; complete Arabic coverage; good small-size legibility. |
 | `fa` | **Vazirmatn** (variable 100–900) | The de-facto quality Persian sans; correct Persian forms (ی ک, Persian digits), proper ZWNJ (نیم‌فاصله) handling; variable weights match Geist's range. |
+| `fa` accent | **Parastoo** (variable 400–700) | Persian Naskh by Vazirmatn's designer (Saber Rastikerdar): shares its metrics and Persian forms, so the accent sits on the same line without jumping. |
+| `ar` accent | **Markazi Text** (variable 400–700) | Editorial Naskh drawn for Arabic text (Borna Izadpanah); calm contrast next to Plex, the Arabic counterpart of Instrument Serif's role. |
+
+Chosen October 2026 after comparing, with the site's real copy on ink: Estedad (fa) and Readex Pro / Noto Sans Arabic (ar) as text faces, Amiri as accent. Vazirmatn and Plex stayed (best Persian forms; most refined Arabic sans); the Naskh accents replaced the bold-sans emphasis.
 
 - **Font stack:** `font-family: var(--font-geist), var(--font-vazirmatn | --font-plex-arabic), system-ui`. Geist has no Arabic glyphs, so Latin runs (brand names, tech terms) stay in Geist and script runs fall through to the Arabic family per glyph.
 - Apply the font variable only in the RTL locale layouts, and check in the network panel that `de` pages don't preload Arabic font files.
@@ -850,7 +854,7 @@ Pair with Geist's neutral, slightly geometric grotesk. Both families are on Goog
   - Line-height body **1.8**, headings **1.25** (stacked dots and descenders need room).
   - **`letter-spacing: 0` everywhere.** Negative or positive tracking breaks cursive joining. This overrides `t-h1` to `t-label`.
   - `t-label`: no uppercase (no case in Arabic script), no mono. Use the script family at 0.8125 rem, weight 500.
-  - **`serif-accent` → emphasis via weight + `accent` colour** (Instrument Serif has no Arabic, and italics aren't a native Arabic-script convention).
+  - **`serif-accent` → Naskh accent face** (Parastoo for `fa`, Markazi Text for `ar`; `--font-script-serif`), upright, weight 600, **1.08 em** because Naskh has a smaller eye than the sans. Instrument Serif has no Arabic, and italics aren't a native Arabic-script convention.
   - `hyphens: none` (not applicable to these scripts).
 
 ### 8.5 Text expansion budgets

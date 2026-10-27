@@ -1,5 +1,13 @@
 import type { Metadata, Viewport } from "next";
-import { Geist, Geist_Mono, IBM_Plex_Sans_Arabic, Instrument_Serif, Vazirmatn } from "next/font/google";
+import {
+  Geist,
+  Geist_Mono,
+  IBM_Plex_Sans_Arabic,
+  Instrument_Serif,
+  Markazi_Text,
+  Parastoo,
+  Vazirmatn,
+} from "next/font/google";
 import { notFound } from "next/navigation";
 import { Footer } from "@/components/layout/Footer";
 import { Navigation } from "@/components/layout/Navigation";
@@ -30,6 +38,10 @@ const plexArabic = IBM_Plex_Sans_Arabic({
   display: "swap",
   preload: false,
 });
+// Naskh accents take the role Instrument Serif has in Latin: Parastoo (by Vazirmatn's designer, drawn
+// for Persian) for fa, Markazi Text (editorial Arabic) for ar.
+const parastoo = Parastoo({ variable: "--font-script-serif", subsets: ["arabic"], display: "swap", preload: false });
+const markazi = Markazi_Text({ variable: "--font-script-serif", subsets: ["arabic"], display: "swap", preload: false });
 
 export const dynamicParams = false;
 export function generateStaticParams() {
@@ -73,7 +85,12 @@ export default async function RootLayout({ children, params }: LayoutProps<"/[la
   if (!isLocale(lang)) notFound();
   const m = await getMessages();
   const { dir } = localeMeta[lang];
-  const script = lang === "fa" ? vazirmatn.variable : lang === "ar" ? plexArabic.variable : "";
+  const script =
+    lang === "fa"
+      ? `${vazirmatn.variable} ${parastoo.variable}`
+      : lang === "ar"
+        ? `${plexArabic.variable} ${markazi.variable}`
+        : "";
 
   return (
     <html
