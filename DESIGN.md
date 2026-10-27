@@ -8,7 +8,8 @@ Studio name **dotMind**, domain `dotmind.de`. dotMind leads from day one; „by 
 
 - **Wordmark „dotMind"** in Geist SemiBold, outlined to paths, tracking −0.035em, camel-case M so the two words read without a space.
 - **The one brand move:** the tittle of the i is an ember circle, slightly wider than the stem and set a little higher than a normal dot. The name says „dot"; the logo shows the dot exactly once, on the i of „Mind": a spark, an idea, a point of focus. No other letter is coloured or altered.
-- **Mark „d."** for favicon, app icon, social avatar and OG corner: the d from the wordmark plus the ember dot as a full stop, on a rounded ink tile. It reads „d-dot" = dot.
+- **Mark „d."** for app icon, social avatar and OG corner: the d from the wordmark plus the ember dot as a full stop, on a rounded ink tile. It reads „d-dot" = dot. Dot and gap derive from the d's stem (dot 1.8 × stem, gap 0.5 × stem); the dot overshoots the baseline like the bowl, and the group sits 1.2 % above the tile's centre (optical centre).
+- **Small cut „d."** for the favicon and anything shown at 16–32 px: Geist Bold, larger on the tile, every edge snapped to the 16 px grid (stem 2 px, gap 1 px, dot 4 px), so the dot never merges with the stem in a browser tab. Never use it above 64 px.
 - **Endorsement** „BY REZA ALAMI" in Geist Mono Regular, uppercase, +0.12em: the same voice as the site's `t-label`, so the lockup belongs to the design system instead of sitting on top of it.
 
 | File | Use |
@@ -16,7 +17,8 @@ Studio name **dotMind**, domain `dotmind.de`. dotMind leads from day one; „by 
 | `dotmind-wordmark-{dark,light}.svg` | Header, wherever the endorsement is shown separately |
 | `dotmind-lockup-horizontal-{dark,light}.svg` | Documents, proposals, email signature, slides |
 | `dotmind-lockup-stacked-{dark,light}.svg` | Footer, OG images, print, invoices |
-| `dotmind-mark-{dark,light}.svg` | Favicon (`src/app/icon.svg`), avatars, app icon |
+| `dotmind-mark-{dark,light}.svg` | Avatars, app icon, OG corner (≥ 64 px) |
+| `dotmind-mark-small-{dark,light}.svg` | Favicon (`coming-soon/favicon.svg`, `src/app/icon.svg`), anything 16–32 px |
 | `dotmind-wordmark-mono-{dark,light}.svg` | One-colour use: embossing, stamps, single-colour print |
 
 `dark` files are for dark backgrounds (bone text, ember `#F2A05B` dot); `light` files for light backgrounds (ink text, deep ember `#C8641E` dot, because `#F2A05B` on paper is too pale).
@@ -30,7 +32,7 @@ Studio name **dotMind**, domain `dotmind.de`. dotMind leads from day one; „by 
 | Footer | Stacked lockup, ≥ 160 px wide, plus the descriptor „Webdesign, Web-Apps & SEO für inhabergeführte Unternehmen". |
 | Hero | No logo. The hero belongs to the headline; Reza appears in the founder byline with his four titles. |
 | OG images | Stacked lockup bottom-left, page H1 as the image text. |
-| Favicon | `d.` mark. |
+| Favicon | `d.` small cut. |
 | Phase 3 | Wordmark without endorsement everywhere. |
 
 Accessible name: the header link is `aria-label="dotMind – Startseite"`; SVG `<title>` is „dotMind" or „dotMind by Reza Alami".
@@ -38,7 +40,7 @@ Accessible name: the header link is `aria-label="dotMind – Startseite"`; SVG `
 ### Rules
 
 - **Clear space:** at least the height of the „o" (x-height) on every side.
-- **Minimum size:** wordmark 72 px wide on screen (18 mm in print); lockups 160 px wide so the endorsement stays ≥ 10 px; mark 16 px.
+- **Minimum size:** wordmark 72 px wide on screen (18 mm in print); lockups 160 px wide so the endorsement stays ≥ 10 px; mark 64 px (below that, the small cut down to 16 px).
 - **Spelling in running text:** „dotMind", never „Dotmind", „DotMind", „dot mind" or „DOTMIND". The domain stays lowercase: `dotmind.de`.
 - **Don't:** recolour letters ember, add a second dot or a period after the name, put the wordmark on photos without an ink or paper panel, stretch, outline, add shadows or gradients, rebuild the logo from live text, or use the endorsement without the wordmark.
 

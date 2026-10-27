@@ -110,30 +110,50 @@ for (const [mode, col] of Object.entries(C)) {
   }
 }
 
-// 4. Mark: "d" + ember dot (reads as "d." = dot), on an ink tile. Used for favicon / app icon / avatar.
+// 4. Mark: "d" + ember dot (reads as "d." = dot), on an ink tile. Used for app icon / avatar / OG corner.
+// Dot and gap derive from the d's stem (128 units in Geist SemiBold), so the mark stays one system.
 {
   const S = 512;
-  const size = 360;
+  const size = 372;
   const g = SANS.charToGlyph("d");
   const bb = g.getBoundingBox();
   const s = size / SANS.unitsPerEm;
-  const dot = size * 0.135;
-  const glyphW = (bb.x2 - bb.x1) * s;
-  const gap = size * 0.06;
-  const groupW = glyphW + gap + dot * 2;
+  const stem = 128 * s;
+  const dot = (stem * 1.8) / 2;              // a full stop, not a ball: 1.8 × stem wide
+  const gap = stem * 0.5;
+  const over = -bb.y1 * s;                   // bowl overshoot below the baseline
+  const groupW = (bb.x2 - bb.x1) * s + gap + dot * 2;
   const x = (S - groupW) / 2 - bb.x1 * s;
-  const baseline = S / 2 + (bb.y2 * s) / 2;
+  const inkH = (bb.y2 - bb.y1) * s;
+  const baseline = S / 2 + inkH / 2 - over - S * 0.012; // ink centred, raised 1.2 % to the optical centre
   const d = g.getPath(x, baseline, size).toPathData(2);
   const cx = x + bb.x2 * s + gap + dot;
-  const cy = baseline - dot;
+  const cy = baseline - dot + over;          // the round dot overshoots like the bowl
   for (const [mode, col] of Object.entries(C)) {
-    const tile = mode === "dark" ? C.dark : C.light;
     files[`dotmind-mark-${mode}.svg`] = svg(S, S,
-      `<rect width="${S}" height="${S}" rx="${S * 0.22}" fill="${tile.bg}"/><path fill="${tile.fg}" d="${d}"/><circle fill="${tile.dot}" cx="${r(cx)}" cy="${r(cy)}" r="${r(dot)}"/>`,
+      `<rect width="${S}" height="${S}" rx="${S * 0.22}" fill="${col.bg}"/><path fill="${col.fg}" d="${d}"/><circle fill="${col.dot}" cx="${r(cx)}" cy="${r(cy)}" r="${r(dot)}"/>`,
       "dotMind", 0);
   }
-  // Favicon: same mark, dark tile, no rounding beyond what the browser applies
-  files["icon.svg"] = files["dotmind-mark-dark.svg"];
+}
+
+// 5. Small cut for 16–32 px (favicon): Geist Bold, bigger, every edge on the 16 px grid (32 units = 1 px).
+// Stem 2 px, gap 1 px, dot 4 px, baseline on a pixel row, so nothing blurs or merges in a browser tab.
+{
+  const S = 512;
+  const BOLD = ot.loadSync("node_modules/geist/dist/fonts/geist-sans/Geist-Bold.ttf");
+  const size = 448;
+  const g = BOLD.charToGlyph("d");
+  const s = size / BOLD.unitsPerEm;
+  const stemRight = 288;                     // the d's stem ends exactly on pixel 9
+  const baseline = 416;                      // pixel row 13
+  const d = g.getPath(stemRight - g.getBoundingBox().x2 * s, baseline, size).toPathData(2);
+  for (const [mode, col] of Object.entries(C)) {
+    files[`dotmind-mark-small-${mode}.svg`] = svg(S, S,
+      `<rect width="${S}" height="${S}" rx="${S * 0.22}" fill="${col.bg}"/><path fill="${col.fg}" d="${d}"/><circle fill="${col.dot}" cx="384" cy="352" r="64"/>`,
+      "dotMind", 0);
+  }
+  // Favicon: the small cut, dark tile
+  files["icon.svg"] = files["dotmind-mark-small-dark.svg"];
 }
 
 // Single-colour versions (print, embossing, fax, one-colour merch): dot takes the text colour.
