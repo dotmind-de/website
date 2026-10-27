@@ -14,9 +14,9 @@
   --color-ember: #f2a05b;
   --color-ember-soft: rgb(242 160 91 / 0.14);
 
-  --font-sans: var(--font-geist), ui-sans-serif, system-ui, sans-serif;
-  --font-mono: var(--font-geist-mono), ui-monospace, monospace;
-  --font-serif: var(--font-instrument-serif), ui-serif, Georgia, serif;
+  --font-sans: var(--font-geist), var(--font-script, ui-sans-serif), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-geist-mono), var(--font-script, ui-monospace), ui-monospace, monospace;
+  --font-serif: var(--font-instrument-serif), var(--font-script, ui-serif), ui-serif, Georgia, serif;
 
   --ease-out-expo: cubic-bezier(0.22, 1, 0.36, 1);
   --ease-in-out-quart: cubic-bezier(0.65, 0, 0.35, 1);
@@ -256,7 +256,96 @@ html.has-custom-cursor :is(input, textarea, select, [contenteditable]) {
   }
 }
 
+/* Logo dot: falls onto the i, squashes on contact, settles (units are the wordmark's viewBox) */
+@keyframes logo-drop {
+  0% {
+    opacity: 0;
+    transform: translateY(-70px);
+    animation-timing-function: cubic-bezier(0.55, 0, 1, 0.45);
+  }
+  12% {
+    opacity: 1;
+  }
+  52% {
+    transform: translateY(0) scale(1, 1);
+    animation-timing-function: ease-out;
+  }
+  64% {
+    transform: translateY(0) scale(1.24, 0.76);
+    animation-timing-function: ease-in-out;
+  }
+  80% {
+    transform: translateY(-4px) scale(0.96, 1.04);
+    animation-timing-function: var(--ease-out-expo);
+  }
+  100% {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes logo-spark {
+  35% {
+    transform: scale(1.4);
+  }
+}
+
+@keyframes logo-ring {
+  from {
+    opacity: 0.7;
+    transform: scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: scale(2.6);
+  }
+}
+
+@keyframes dot-breathe {
+  0%,
+  100% {
+    opacity: 0.6;
+    transform: scale(0.82);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.12);
+  }
+}
+
 @layer components {
+/* ── Logo motion: only the dot moves, the letters never do ── */
+.logo-fall,
+.logo-dot,
+.logo-ring {
+  transform-box: fill-box;
+  transform-origin: center;
+}
+.logo-ring {
+  fill: none;
+  stroke: var(--color-ember);
+  stroke-width: 1.6;
+  opacity: 0;
+}
+/* The drop runs on the wrapper and the spark on the dot, so a hover never replays the intro */
+[data-intro] .logo-fall {
+  transform-origin: 50% 100%;
+  animation: logo-drop 0.9s 0.25s both;
+}
+.group:hover .logo-dot,
+.group:focus-visible .logo-dot {
+  animation: logo-spark 0.45s var(--ease-out-expo);
+}
+.group:hover .logo-ring,
+.group:focus-visible .logo-ring {
+  animation: logo-ring 0.45s var(--ease-out-expo);
+}
+
+/* Thinking dot: replaces the spinner while something loads */
+.dot-breathe {
+  animation: dot-breathe 1.2s ease-in-out infinite;
+}
+
 /* Two stacked labels that roll on hover (buttons) */
 .text-roll {
   display: inline-grid;
@@ -369,7 +458,37 @@ html.has-custom-cursor :is(input, textarea, select, [contenteditable]) {
   .caret-blink,
   .spin-slow,
   .ai-gradient-text,
-  .ai-sheen {
+  .ai-sheen,
+  .logo-fall,
+  .logo-dot,
+  .logo-ring,
+  .dot-breathe {
     animation: none !important;
   }
+}
+
+/* ───────────────────────── Right-to-left (Persian, Arabic) ─────────────────────────
+   Arabic script is cursive: any tracking breaks the joins, uppercase and italics don't
+   exist, and it needs more line height. The serif accent becomes ember-coloured weight. */
+:root[dir="rtl"] body {
+  font-family: var(--font-script), var(--font-geist), ui-sans-serif, system-ui, sans-serif;
+  line-height: 1.8;
+}
+:root[dir="rtl"] *,
+:root[dir="rtl"] *::before,
+:root[dir="rtl"] *::after {
+  letter-spacing: 0 !important;
+}
+:root[dir="rtl"] :is(h1, h2, h3, .t-h1, .t-h2, .t-h3, .t-display) {
+  line-height: 1.3 !important;
+}
+:root[dir="rtl"] .t-label,
+:root[dir="rtl"] .font-mono {
+  font-family: var(--font-script), var(--font-geist-mono), ui-monospace, monospace;
+  text-transform: none;
+}
+:root[dir="rtl"] .serif-accent {
+  font-family: var(--font-script), var(--font-instrument-serif), serif;
+  font-style: normal;
+  font-weight: 700;
 }

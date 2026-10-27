@@ -4,7 +4,8 @@ import { AiBadge } from "@/components/ui/AiBadge";
 import { ArrowLink } from "@/components/ui/Button";
 import { ArrowUpRight } from "@/components/ui/Icons";
 import { Placeholder } from "@/components/ui/Placeholder";
-import { coverOf, displayHost, type Project } from "@/content/projects";
+import { coverOf, displayHost, statusOf, type Project } from "@/content/projects";
+import { getHref, getMessages } from "@/i18n/server";
 import { cn } from "@/lib/cn";
 import { PhoneFrame } from "./DeviceFrames";
 import { ProjectImage } from "./ProjectImage";
@@ -16,7 +17,7 @@ const pad = (n: number) => String(n).padStart(2, "0");
  * Project entry. The screenshot and title both lead to the case study;
  * the live site is a separate, visibly external link (↗).
  */
-export function ProjectCard({
+export async function ProjectCard({
   project,
   index,
   total,
@@ -32,7 +33,8 @@ export function ProjectCard({
   flip?: boolean;
   priority?: boolean;
 }) {
-  const href = `/projects/${project.slug}`;
+  const m = await getMessages();
+  const href = (await getHref())(`/projects/${project.slug}`);
   const feature = layout === "feature";
 
   return (
@@ -51,7 +53,7 @@ export function ProjectCard({
           feature && flip && "lg:order-2 lg:col-start-6",
         )}
       >
-        <Link href={href} tabIndex={-1} aria-hidden data-cursor="view" data-cursor-label="View" className="group relative block">
+        <Link href={href} tabIndex={-1} aria-hidden data-cursor="view" data-cursor-label={m.common.view} className="group relative block">
           <ProjectImage
             image={coverOf(project)}
             title={project.title}
@@ -88,9 +90,9 @@ export function ProjectCard({
           </span>
           <span aria-hidden className="h-px w-6 bg-line-strong" />
           {project.ai && <AiBadge />}
-          {project.category ?? <Placeholder>Category</Placeholder>}
+          {project.category ?? <Placeholder>{m.placeholder.category}</Placeholder>}
           <span aria-hidden>·</span>
-          {project.year ?? <Placeholder>Year</Placeholder>}
+          {project.year ?? <Placeholder>{m.placeholder.year}</Placeholder>}
         </p>
 
         <h3 id={`project-${project.slug}`} className={cn("mt-4", feature ? "t-h2" : "t-h3")}>
@@ -100,24 +102,48 @@ export function ProjectCard({
         </h3>
 
         <div className="mt-4 max-w-md text-muted">
-          {project.summary ?? <Placeholder>Add a one-to-two sentence summary</Placeholder>}
+          {project.summary ?? <Placeholder>{m.placeholder.summary}</Placeholder>}
         </div>
 
         <TechnologyList items={project.technologies} className="mt-5" />
 
         <div className="mt-7 flex flex-wrap items-center gap-x-7 gap-y-3">
-          <ArrowLink href={href} srSuffix={`— ${project.title} case study`}>
-            View project
+          <ArrowLink href={href} srSuffix={`— ${project.title} ${m.common.caseStudy}`}>
+            {m.common.viewProject}
           </ArrowLink>
-          <LiveLink url={project.links.live} title={project.title} />
+          <ProjectStatusLink project={project} />
         </div>
       </Reveal>
     </article>
   );
 }
 
+/** Live link for live projects; an honest status chip for everything else. */
+export async function ProjectStatusLink({ project }: { project: Project }) {
+  const { common } = await getMessages();
+  const status = statusOf(project);
+  if (status === "live") return <LiveLink url={project.links.live} title={project.title} t={common} />;
+  return (
+    <span className="inline-flex items-center gap-2 rounded-full border border-line-strong px-3.5 py-1.5 font-mono text-[0.72rem] text-muted">
+      <span
+        aria-hidden
+        className={cn("h-1.5 w-1.5 rounded-full", status === "completed" ? "bg-bone/50" : "border border-ember")}
+      />
+      {common.status[status]}
+    </span>
+  );
+}
+
 /** External live-site link, visually distinct from internal navigation. */
-export function LiveLink({ url, title }: { url: string | null; title: string }) {
+export function LiveLink({
+  url,
+  title,
+  t,
+}: {
+  url: string | null;
+  title: string;
+  t: { live: string; visitLive: string; opensNewTab: string };
+}) {
   if (!url) return <Placeholder>Live URL</Placeholder>;
   return (
     <a
@@ -127,9 +153,11 @@ export function LiveLink({ url, title }: { url: string | null; title: string }) 
       className="group inline-flex items-center gap-2 rounded-full border border-line-strong px-3.5 py-1.5 font-mono text-[0.72rem] text-muted transition-colors hover:border-ember/60 hover:text-bone"
     >
       <span className="h-1.5 w-1.5 rounded-full bg-ember" aria-hidden />
-      Live · {displayHost(url)}
+      {t.live} · {displayHost(url)}
       <ArrowUpRight size={13} className="transition-transform duration-500 group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
-      <span className="sr-only">— visit {title} live site (opens in a new tab)</span>
+      <span className="sr-only">
+        — {title}: {t.visitLive} ({t.opensNewTab})
+      </span>
     </a>
   );
 }

@@ -9,18 +9,24 @@ import { ButtonLink } from "@/components/ui/Button";
 import { Logo } from "@/components/ui/Logo";
 import { Placeholder } from "@/components/ui/Placeholder";
 import { site } from "@/content/site";
+import { localePath, stripLocale, type Locale } from "@/i18n/config";
+import type { Messages } from "@/i18n/messages/en";
+import { LanguageList, LanguageSwitcher, type LanguageOption } from "./LanguageSwitcher";
 import { cn } from "@/lib/cn";
 import { ease, overlay } from "@/lib/motion";
 
 const isActive = (pathname: string, href: string) => pathname === href || pathname.startsWith(`${href}/`);
 
-export function Navigation() {
-  const pathname = usePathname();
+type NavProps = { lang: Locale; t: Messages["nav"]; languages: LanguageOption[] };
+
+export function Navigation({ lang, t, languages }: NavProps) {
+  const pathname = stripLocale(usePathname() ?? "/");
+  const href = (path: string) => localePath(lang, path);
   const { scrollY } = useScroll();
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
   const toggleRef = useRef<HTMLButtonElement>(null);
-  const close = useCallback(() => setOpen(false), []);
+  const close = useCallback(() => setOpen(false), [setOpen]);
 
   useMotionValueEvent(scrollY, "change", (v) => setScrolled(v > 24));
 
@@ -39,24 +45,24 @@ export function Navigation() {
         )}
       >
         <Link
-          href="/"
+          href={href("/")}
           className="group relative z-[61] flex items-center gap-3 text-bone"
-          aria-label={`${site.name} by ${site.founder} — home`}
+          aria-label={`${site.name} by ${site.founder} — ${t.homeLabel}`}
         >
-          <Logo title={null} className="block h-5 w-auto md:h-[22px]" />
-          <span className="t-label hidden whitespace-nowrap text-[0.62rem] text-muted transition-colors group-hover:text-bone md:inline">
+          <Logo title={null} intro className="block h-5 w-auto md:h-[22px]" />
+          <span lang="en" className="t-label hidden whitespace-nowrap text-[0.62rem] text-muted transition-colors group-hover:text-bone md:inline">
             by {site.founder}
           </span>
         </Link>
 
-        <nav aria-label="Primary" className="hidden md:block">
+        <nav aria-label={t.primary} className="hidden md:block">
           <ul className="flex items-center gap-10">
             {site.nav.map((item, i) => {
               const active = isActive(pathname, item.href);
               return (
                 <li key={item.href}>
                   <Link
-                    href={item.href}
+                    href={href(item.href)}
                     aria-current={active ? "page" : undefined}
                     className={cn(
                       "group flex items-baseline gap-1.5 text-sm transition-colors duration-300",
@@ -66,7 +72,7 @@ export function Navigation() {
                     <span aria-hidden className={cn("font-mono text-[0.62rem]", active ? "text-ember" : "text-muted/70 group-hover:text-ember")}>
                       0{i + 1}
                     </span>
-                    <span className="link-underline">{item.label}</span>
+                    <span className="link-underline">{t[item.key]}</span>
                   </Link>
                 </li>
               );
@@ -74,10 +80,11 @@ export function Navigation() {
           </ul>
         </nav>
 
-        <div className="hidden md:block">
+        <div className="hidden items-center gap-3 md:flex">
+          <LanguageSwitcher lang={lang} languages={languages} label={t.language} chooseLabel={t.chooseLanguage} />
           <Magnetic strength={0.25}>
-            <ButtonLink href="/contact" size="sm">
-              Let&apos;s talk
+            <ButtonLink href={href("/contact")} size="sm">
+              {t.letsTalk}
             </ButtonLink>
           </Magnetic>
         </div>
@@ -90,7 +97,7 @@ export function Navigation() {
           aria-controls="mobile-menu"
           onClick={() => setOpen((o) => !o)}
         >
-          <span>{open ? "Close" : "Menu"}</span>
+          <span>{open ? t.close : t.menu}</span>
           <span aria-hidden className="relative block h-3 w-5">
             <span
               className={cn(
@@ -109,7 +116,16 @@ export function Navigation() {
       </div>
 
       <AnimatePresence>
-        {open && <MobileMenu pathname={pathname} onClose={close} returnFocusTo={toggleRef} />}
+        {open && (
+          <MobileMenu
+            pathname={pathname}
+            onClose={close}
+            returnFocusTo={toggleRef}
+            lang={lang}
+            t={t}
+            languages={languages}
+          />
+        )}
       </AnimatePresence>
     </header>
   );
@@ -119,11 +135,14 @@ function MobileMenu({
   pathname,
   onClose,
   returnFocusTo,
+  lang,
+  t,
+  languages,
 }: {
   pathname: string;
   onClose: () => void;
   returnFocusTo: React.RefObject<HTMLButtonElement | null>;
-}) {
+} & NavProps) {
   const firstLink = useRef<HTMLAnchorElement>(null);
 
   useEffect(() => {
@@ -140,20 +159,20 @@ function MobileMenu({
     };
   }, [onClose, returnFocusTo]);
 
-  const links = [{ label: "Home", href: "/" }, ...site.nav];
+  const links = [{ key: "home" as const, href: "/" }, ...site.nav];
 
   return (
     <motion.div
       id="mobile-menu"
       role="dialog"
       aria-modal="true"
-      aria-label="Site menu"
+      aria-label={t.siteMenu}
       className="fixed inset-0 z-60 flex flex-col bg-ink-2 pt-24 md:hidden"
       initial={{ clipPath: "inset(0 0 100% 0)" }}
       animate={{ clipPath: "inset(0 0 0% 0)", transition: overlay.enter }}
       exit={{ clipPath: "inset(0 0 100% 0)", transition: overlay.exit }}
     >
-      <nav aria-label="Mobile" className="shell flex-1">
+      <nav aria-label={t.mobile} className="shell flex-1">
         <ul className="border-t border-line">
           {links.map((item, i) => {
             const active = item.href === "/" ? pathname === "/" : isActive(pathname, item.href);
@@ -166,12 +185,12 @@ function MobileMenu({
                 >
                   <Link
                     ref={i === 0 ? firstLink : undefined}
-                    href={item.href}
+                    href={localePath(lang, item.href)}
                     onClick={onClose}
                     aria-current={active ? "page" : undefined}
                     className="flex items-baseline justify-between py-5 text-[2.6rem] font-semibold leading-none tracking-[-0.045em]"
                   >
-                    <span className={active ? "text-ember" : undefined}>{item.label}</span>
+                    <span className={active ? "text-ember" : undefined}>{t[item.key]}</span>
                     <span aria-hidden className="font-mono text-xs text-muted">0{i + 1}</span>
                   </Link>
                 </motion.div>
@@ -186,10 +205,8 @@ function MobileMenu({
         animate={{ opacity: 1, transition: { delay: 0.55, duration: 0.5 } }}
         exit={{ opacity: 0, transition: { duration: 0.15 } }}
       >
-        <p className="t-label text-muted">
-          {site.name} by {site.founder}
-        </p>
-        <p className="t-label text-muted">Get in touch</p>
+        <LanguageList lang={lang} languages={languages} label={t.language} onNavigate={onClose} className="pb-4" />
+        <p className="t-label text-muted">{t.getInTouch}</p>
         {site.email ? (
           <a href={`mailto:${site.email}`} className="block text-lg">
             {site.email}

@@ -2,7 +2,8 @@ import type { ReactNode } from "react";
 import { AnimatedText } from "@/components/motion/AnimatedText";
 import { cn } from "@/lib/cn";
 
-type Segment = string | { text: string; className?: string };
+export type HeadingSegment = string | { text: string; className?: string };
+type Segment = HeadingSegment;
 
 /**
  * Editorial section header: index + label on the left rail, headline on the right.

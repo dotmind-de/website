@@ -5,7 +5,7 @@
 
 export type SocialLink = {
   label: string;
-  /** Full URL, e.g. "https://www.linkedin.com/in/…". `null` = placeholder. */
+  /** Full URL, e.g. "https://github.com/…". `null` = placeholder. */
   href: string | null;
 };
 
@@ -43,17 +43,16 @@ export const site = {
   cv: null as string | null,
 
   socials: [
-    { label: "LinkedIn", href: null },
-    { label: "GitHub", href: null },
-    /** Instagram profile URL, e.g. "https://www.instagram.com/dotmind.de". `null` = placeholder. */
-    { label: "Instagram", href: null },
+    { label: "GitHub", href: "https://github.com/r-alami" },
+    { label: "Instagram", href: "https://www.instagram.com/dotmind_de" },
   ] as SocialLink[],
 
+  /** Labels come from the translations (`nav.<key>`). */
   nav: [
-    { label: "Work", href: "/projects" },
-    { label: "About", href: "/about" },
-    { label: "Contact", href: "/contact" },
-  ],
+    { key: "work", href: "/projects" },
+    { key: "about", href: "/about" },
+    { key: "contact", href: "/contact" },
+  ] as const,
 };
 
 export const mailto = (subject = "New project") =>

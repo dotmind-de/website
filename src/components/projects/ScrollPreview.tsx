@@ -5,7 +5,15 @@ import type { ProjectImage } from "@/content/projects";
  * Full-page screenshot in a browser frame. Hovering (or focusing) the frame
  * glides through the entire page; on touch devices the frame scrolls natively.
  */
-export function ScrollPreview({ image, host }: { image: ProjectImage; host: string }) {
+export function ScrollPreview({
+  image,
+  host,
+  t,
+}: {
+  image: ProjectImage;
+  host: string;
+  t: { fullPage: string; hoverToScroll: string; swipeToScroll: string; scroll: string };
+}) {
   // Longer pages scroll for longer so the speed feels constant.
   const seconds = Math.min(14, Math.max(5, image.height / 900));
 
@@ -19,9 +27,9 @@ export function ScrollPreview({ image, host }: { image: ProjectImage; host: stri
       </div>
       <div
         tabIndex={0}
-        aria-label={`${image.alt}. Hover or focus to scroll through the page.`}
+        aria-label={`${image.alt}. ${t.hoverToScroll}`}
         data-cursor="view"
-        data-cursor-label="Scroll"
+        data-cursor-label={t.scroll}
         className="group relative aspect-[16/10] overflow-y-auto outline-none [@media(hover:hover)]:overflow-hidden"
       >
         {/* Touch: natural-height image scrolls inside the frame */}
@@ -44,9 +52,9 @@ export function ScrollPreview({ image, host }: { image: ProjectImage; host: stri
         />
       </div>
       <figcaption className="flex items-center justify-between border-t border-line px-4 py-2.5 font-mono text-[0.68rem] text-muted">
-        <span>Full page</span>
-        <span className="hidden [@media(hover:hover)]:inline">Hover to scroll ↓</span>
-        <span className="[@media(hover:hover)]:hidden">Swipe inside to scroll ↓</span>
+        <span>{t.fullPage}</span>
+        <span className="hidden [@media(hover:hover)]:inline">{t.hoverToScroll}</span>
+        <span className="[@media(hover:hover)]:hidden">{t.swipeToScroll}</span>
       </figcaption>
     </figure>
   );

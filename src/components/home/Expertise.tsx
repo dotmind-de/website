@@ -1,17 +1,20 @@
 import { Reveal } from "@/components/motion/Reveal";
 import { AiBadge } from "@/components/ui/AiBadge";
 import { Plus } from "@/components/ui/Icons";
-import { SectionHeading, accent } from "@/components/ui/SectionHeading";
-import { expertise } from "@/content/profile";
+import { SectionHeading } from "@/components/ui/SectionHeading";
+import { toSegments } from "@/i18n/segments";
+import { getLocalizedProfile, getMessages } from "@/i18n/server";
 
-export function Expertise() {
+export async function Expertise() {
+  const { expertise: t } = await getMessages();
+  const { expertise } = await getLocalizedProfile();
   return (
     <section aria-labelledby="expertise-title" className="shell py-28 md:py-40">
       <SectionHeading
         id="expertise-title"
         index="03"
-        label="Expertise"
-        title={["Four disciplines,", accent("one"), "way of working."]}
+        label={t.label}
+        title={toSegments(t.title)}
       />
 
       <ol className="mt-16 md:mt-24">
@@ -25,10 +28,10 @@ export function Expertise() {
               />
               <p className="col-span-1 font-mono text-xs text-ember md:col-span-1">0{n + 1}</p>
               <div className="col-span-3 md:col-span-7 lg:col-span-5">
-                <h3 className="t-h2 transition-transform duration-700 ease-[var(--ease-out-expo)] group-hover:translate-x-3">
+                <h3 className="t-h2 transition-transform duration-700 ease-[var(--ease-out-expo)] group-hover:translate-x-3 rtl:group-hover:-translate-x-3">
                   {area.title}
                 </h3>
-                {area.id === "artificial-intelligence" && <AiBadge label="Across every discipline" className="mt-5" />}
+                {area.id === "artificial-intelligence" && <AiBadge label={t.aiBadge} className="mt-5" />}
                 <p className="mt-5 max-w-md text-muted">{area.statement}</p>
               </div>
               <ul className="col-span-4 grid gap-x-6 gap-y-3 self-end sm:grid-cols-2 md:col-span-7 md:col-start-2 lg:col-span-6 lg:col-start-7">

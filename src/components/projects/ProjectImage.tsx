@@ -41,7 +41,10 @@ export function ProjectImage({
       height={image.height}
       sizes={sizes}
       priority={priority}
-      className="h-full w-full object-cover"
+      className={cn(
+        "h-full w-full",
+        image.fit === "contain" ? "object-contain p-[6%] drop-shadow-[0_24px_40px_rgb(0_0_0/0.45)]" : "object-cover",
+      )}
     />
   ) : (
     <ScreenshotPlaceholder title={title} slug={slug} />

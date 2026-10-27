@@ -9,8 +9,20 @@ import { SelectedWork } from "@/components/home/SelectedWork";
 import { Technologies } from "@/components/home/Technologies";
 import { JsonLd } from "@/components/ui/JsonLd";
 import { site } from "@/content/site";
+import { localeMeta } from "@/i18n/config";
+import { alternatesFor } from "@/i18n/seo";
+import { toSegments } from "@/i18n/segments";
+import { getLocale, getLocalizedProfile, getMessages } from "@/i18n/server";
+import type { Metadata } from "next";
 
-export default function HomePage() {
+export async function generateMetadata(): Promise<Metadata> {
+  return { alternates: alternatesFor("/", await getLocale()) };
+}
+
+export default async function HomePage() {
+  const lang = await getLocale();
+  const m = await getMessages();
+  const { aiDomains, process } = await getLocalizedProfile();
   return (
     <>
       <JsonLd
@@ -22,7 +34,8 @@ export default function HomePage() {
           alternateName: `${site.name} by ${site.founder}`,
           url: site.url,
           logo: `${site.url}/brand/dotmind-mark-dark.svg`,
-          description: site.description,
+          description: m.meta.description,
+          inLanguage: localeMeta[lang].intl,
           founder: {
             "@type": "Person",
             "@id": `${site.url}/about#founder`,
@@ -49,10 +62,10 @@ export default function HomePage() {
       />
       <Hero />
       <Intro />
-      <Intelligence />
+      <Intelligence aiDomains={aiDomains} t={m.intelligence} title={toSegments(m.intelligence.title)} />
       <Expertise />
       <SelectedWork />
-      <Process />
+      <Process process={process} label={m.process.label} title={toSegments(m.process.title)} aside={m.process.aside} />
       <Background />
       <Technologies />
       <ClosingCTA />

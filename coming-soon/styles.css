@@ -46,6 +46,25 @@ a:focus-visible { outline: 2px solid var(--ember); outline-offset: 4px; border-r
 .brand svg { height: 22px; width: auto; display: block; }
 .brand .by { display: none; }
 @media (min-width: 640px) { .brand .by { display: inline; } }
+
+/* Logo motion (same as the site): the dot drops onto the i on load, sparks on hover/focus. Letters never move. */
+.brand svg { overflow: visible; }
+.logo-fall, .logo-dot, .logo-ring { transform-box: fill-box; transform-origin: center; }
+.logo-ring { fill: none; stroke: var(--ember); stroke-width: 1.6; opacity: 0; }
+[data-intro] .logo-fall { transform-origin: 50% 100%; animation: logo-drop 0.9s 0.25s both; }
+.brand:hover .logo-dot, .brand:focus-visible .logo-dot { animation: logo-spark 0.45s cubic-bezier(0.22, 1, 0.36, 1); }
+.brand:hover .logo-ring, .brand:focus-visible .logo-ring { animation: logo-ring 0.45s cubic-bezier(0.22, 1, 0.36, 1); }
+@keyframes logo-drop {
+  0% { opacity: 0; transform: translateY(-70px); animation-timing-function: cubic-bezier(0.55, 0, 1, 0.45); }
+  12% { opacity: 1; }
+  52% { transform: translateY(0) scale(1, 1); animation-timing-function: ease-out; }
+  64% { transform: translateY(0) scale(1.24, 0.76); animation-timing-function: ease-in-out; }
+  80% { transform: translateY(-4px) scale(0.96, 1.04); animation-timing-function: cubic-bezier(0.22, 1, 0.36, 1); }
+  100% { opacity: 1; transform: none; }
+}
+@keyframes logo-spark { 35% { transform: scale(1.4); } }
+@keyframes logo-ring { from { opacity: 0.7; transform: scale(1); } to { opacity: 0; transform: scale(2.6); } }
+@media (prefers-reduced-motion: reduce) { .logo-fall, .logo-dot, .logo-ring { animation: none !important; } }
 .status { display: inline-flex; align-items: center; gap: 10px; }
 .status::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: var(--ember); }
 

@@ -21,8 +21,8 @@ const base =
   "group relative inline-flex items-center justify-center gap-3 overflow-hidden rounded-full font-medium tracking-[-0.01em] transition-colors duration-300 isolate";
 
 const sizes: Record<Size, string> = {
-  md: "h-14 pl-7 pr-6 text-[0.95rem]",
-  sm: "h-10 pl-5 pr-4 text-sm",
+  md: "h-14 ps-7 pe-6 text-[0.95rem]",
+  sm: "h-10 ps-5 pe-4 text-sm",
 };
 
 const variants: Record<Variant, string> = {
@@ -54,7 +54,7 @@ export function ButtonLink({ href, children, variant = "primary", size = "md", c
         size={size === "md" ? 18 : 15}
         className={cn(
           "transition-transform duration-500 ease-[var(--ease-out-expo)]",
-          external ? "group-hover:-translate-y-0.5 group-hover:translate-x-0.5" : "group-hover:translate-x-1",
+          external ? "group-hover:-translate-y-0.5 group-hover:translate-x-0.5" : "group-hover:translate-x-1 rtl:-scale-x-100 rtl:group-hover:-translate-x-1",
         )}
       />
       {srSuffix && <span className="sr-only"> {srSuffix}</span>}
@@ -103,7 +103,7 @@ export function ArrowLink({
         size={15}
         className={cn(
           "transition-transform duration-500 ease-[var(--ease-out-expo)]",
-          external ? "group-hover:-translate-y-0.5 group-hover:translate-x-0.5" : "group-hover:translate-x-1",
+          external ? "group-hover:-translate-y-0.5 group-hover:translate-x-0.5" : "group-hover:translate-x-1 rtl:-scale-x-100 rtl:group-hover:-translate-x-1",
         )}
       />
       {srSuffix && <span className="sr-only"> {srSuffix}</span>}

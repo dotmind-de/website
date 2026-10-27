@@ -5,6 +5,8 @@ import { AiBadge } from "@/components/ui/AiBadge";
 import { ButtonLink } from "@/components/ui/Button";
 import { Logo } from "@/components/ui/Logo";
 import { site } from "@/content/site";
+import { rich } from "@/i18n/segments";
+import { getHref, getMessages } from "@/i18n/server";
 import { HeroField } from "./HeroField";
 
 const i = (n: number) => ({ "--i": n }) as CSSProperties;
@@ -13,7 +15,10 @@ const i = (n: number) => ({ "--i": n }) as CSSProperties;
  * Hero. Text reveals are CSS keyframes (they run before hydration, so the
  * LCP text paints immediately); the ambient field and magnetic CTA hydrate after.
  */
-export function Hero() {
+export async function Hero() {
+  const m = await getMessages();
+  const t = m.hero;
+  const href = await getHref();
   return (
     <section
       aria-labelledby="hero-title"
@@ -35,9 +40,9 @@ export function Hero() {
               <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-ember opacity-50 motion-reduce:animate-none" />
               <span className="relative inline-flex h-2 w-2 rounded-full bg-ember" />
             </span>
-            Built for the age of AI — software, web, apps &amp; smart home
+            {t.eyebrow}
           </p>
-          <p className="hidden md:block">Portfolio · {new Date().getFullYear()}</p>
+          <p className="hidden md:block">{t.portfolio} · {new Date().getFullYear()}</p>
         </div>
 
         <div className="mt-auto flex flex-col">
@@ -50,13 +55,15 @@ export function Hero() {
               </span>
             </span>
             <span className="fade-in t-label mt-5 block text-muted md:mt-7" style={i(4)}>
-              by {site.founder}
+              <span lang="en">
+                {m.common.by} {site.founder}
+              </span>
             </span>
           </h1>
 
           <div className="order-1 grid-editorial gap-y-10">
             {/* Roles */}
-            <ul aria-label="Disciplines" className="col-span-4 md:col-span-4 lg:col-span-5">
+            <ul aria-label={t.disciplines} className="col-span-4 md:col-span-4 lg:col-span-5">
               {site.roles.map((role, n) => {
                 const ai = role.startsWith("AI");
                 return (
@@ -66,7 +73,7 @@ export function Hero() {
                       <span className="t-h3 font-medium">
                         {ai ? <ScrambleText text={role} delay={0.9} className="text-ember" /> : role}
                       </span>
-                      {ai && <AiBadge label="Core focus" className="hidden self-center sm:inline-flex" />}
+                      {ai && <AiBadge label={t.coreFocus} className="hidden self-center sm:inline-flex" />}
                     </span>
                   </li>
                 );
@@ -76,16 +83,14 @@ export function Hero() {
             {/* Statement + CTAs */}
             <div className="col-span-4 md:col-span-4 lg:col-span-5 lg:col-start-8">
               <p className="fade-in t-lead max-w-[32ch] text-muted" style={i(2)}>
-                Building <span className="serif-accent text-[1.15em] text-bone">intelligent</span> digital products for
-                the <span className="ai-gradient-text serif-accent whitespace-nowrap text-[1.15em]">age of AI</span> — where technology,
-                design and digital strategy meet.
+                {rich(t.statement, "serif-accent text-[1.15em] text-bone")}
               </p>
               <div className="fade-in mt-8 flex flex-wrap items-center gap-3" style={i(4)}>
                 <Magnetic>
-                  <ButtonLink href="/projects">View my work</ButtonLink>
+                  <ButtonLink href={href("/projects")}>{t.viewWork}</ButtonLink>
                 </Magnetic>
-                <ButtonLink href="/contact" variant="ghost">
-                  Let&apos;s work together
+                <ButtonLink href={href("/contact")} variant="ghost">
+                  {t.workTogether}
                 </ButtonLink>
               </div>
             </div>
@@ -98,11 +103,15 @@ export function Hero() {
             <span aria-hidden className="relative block h-8 w-px overflow-hidden bg-line">
               <span className="scroll-cue absolute inset-0 bg-ember" />
             </span>
-            <span className="link-underline">Scroll to explore</span>
+            <span className="link-underline">{t.scroll}</span>
           </a>
           <p className="t-label hidden text-muted sm:block">
-            Design <span className="text-ember">→</span> AI <span className="text-ember">→</span> Build{" "}
-            <span className="text-ember">→</span> Market
+            {t.rail.map((step, n) => (
+              <span key={step}>
+                {n > 0 && <span className="mx-1.5 text-ember rtl:inline-block rtl:-scale-x-100">→</span>}
+                {step}
+              </span>
+            ))}
           </p>
         </div>
       </div>

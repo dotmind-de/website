@@ -1,20 +1,24 @@
 import { ProjectCard } from "@/components/projects/ProjectCard";
 import { ArrowLink } from "@/components/ui/Button";
-import { SectionHeading, accent } from "@/components/ui/SectionHeading";
-import { getFeaturedProjects, getProjects } from "@/content/projects";
+import { SectionHeading } from "@/components/ui/SectionHeading";
+import { toSegments } from "@/i18n/segments";
+import { getHref, getLocalizedProjects, getMessages } from "@/i18n/server";
 
-export function SelectedWork() {
-  const featured = getFeaturedProjects();
-  const total = getProjects().length;
+export async function SelectedWork() {
+  const { work: t } = await getMessages();
+  const href = await getHref();
+  const projects = await getLocalizedProjects();
+  const featured = projects.filter((p) => p.featured);
+  const total = projects.length;
 
   return (
     <section id="work" aria-labelledby="work-title" className="shell scroll-mt-20 py-28 md:py-40">
       <SectionHeading
         id="work-title"
         index="04"
-        label="Selected work"
-        title={["Real products,", accent("live"), "on every screen."]}
-        aside={<ArrowLink href="/projects">{`All projects (${total})`}</ArrowLink>}
+        label={t.label}
+        title={toSegments(t.title)}
+        aside={<ArrowLink href={href("/projects")}>{`${t.allProjects} (${total})`}</ArrowLink>}
       />
 
       <div className="mt-20 space-y-28 md:mt-28 md:space-y-44">
