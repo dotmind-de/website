@@ -120,6 +120,12 @@ export const tr: Messages = {
     languages: "Diller",
     backToTop: "Başa dön",
   },
+  legal: {
+    label: "Yasal",
+    imprint: "Künye",
+    privacy: "Gizlilik politikası",
+    germanOnly: "Künye ve gizlilik politikası, bağlayıcı dil olan Almanca olarak yayımlanır.",
+  },
   about: {
     label: "Hakkımda",
     lines: [

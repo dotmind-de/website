@@ -35,6 +35,8 @@ export const site = {
   whatsapp: "https://wa.me/4917657799610" as string | null,
   /** Business address (Impressum, structured data). Shown on the site only as `location`. */
   address: { street: "Am Kämpchen 8", postalCode: "40885", city: "Ratingen", country: "DE" },
+  /** USt-IdNr. for the Impressum, e.g. "DE123456789". `null` = none issued; the section is left out. */
+  vatId: null as string | null,
   /** City / country or "Remote". `null` = placeholder. */
   location: "Ratingen, near Düsseldorf" as string | null,
   /** Spoken languages, e.g. ["English", "German"]. `null` = placeholder. */

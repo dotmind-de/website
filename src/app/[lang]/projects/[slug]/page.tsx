@@ -193,12 +193,10 @@ export default async function ProjectPage({ params }: PageProps<"/[lang]/project
             ) : (
               <Placeholder>Live project URL</Placeholder>
             )}
-            {project.links.github ? (
+            {project.links.github && (
               <ButtonLink href={project.links.github} variant="ghost" srSuffix={`— ${project.title} source code`}>
                 GitHub
               </ButtonLink>
-            ) : (
-              <Placeholder>GitHub URL, if public</Placeholder>
             )}
             {project.links.other?.map((l) => (
               <ButtonLink key={l.href} href={l.href} variant="ghost">

@@ -10,12 +10,17 @@ export default function sitemap(): MetadataRoute.Sitemap {
     ...getProjects().map((p) => ({ path: `/projects/${p.slug}`, priority: 0.7, changeFrequency: "yearly" as const })),
   ];
   const url = (l: (typeof locales)[number], path: string) => `${site.url}${localePath(l, path)}`.replace(/\/$/, "") || site.url;
-  return paths.flatMap(({ path, priority, changeFrequency }) =>
+  // Legal pages exist in German only (the other languages serve the same text, noindexed).
+  const legal = ["/impressum", "/datenschutz"].map((path) => ({ url: url("de", path), changeFrequency: "yearly" as const, priority: 0.2 }));
+  return [
+    ...legal,
+    ...paths.flatMap(({ path, priority, changeFrequency }) =>
     locales.map((l) => ({
       url: url(l, path),
       changeFrequency,
       priority: l === "de" ? priority : Math.round(priority * 0.9 * 10) / 10,
       alternates: { languages: { ...Object.fromEntries(locales.map((x) => [x, url(x, path)])), "x-default": url("en", path) } },
-    })),
-  );
+      })),
+    ),
+  ];
 }

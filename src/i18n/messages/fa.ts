@@ -120,6 +120,12 @@ export const fa: Messages = {
     languages: "زبان‌ها",
     backToTop: "بازگشت به بالا",
   },
+  legal: {
+    label: "حقوقی",
+    imprint: "اطلاعات حقوقی",
+    privacy: "حریم خصوصی",
+    germanOnly: "اطلاعات حقوقی و سیاست حریم خصوصی به زبان آلمانی منتشر می‌شوند که زبان معتبر و الزام‌آور است.",
+  },
   about: {
     label: "درباره من",
     lines: [

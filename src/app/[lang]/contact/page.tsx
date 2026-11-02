@@ -62,7 +62,7 @@ export default async function ContactPage() {
       <section id="inquiry" aria-labelledby="inquiry-title" className="shell scroll-mt-24 pb-24 md:pb-36">
         <SectionHeading id="inquiry-title" index="01" label={t.formLabel} title={toSegments(t.formTitle)} aside={t.formAside} />
         <div className="mt-14 md:mt-20 lg:ms-[25%]">
-          <ContactForm lang={lang} t={t} />
+          <ContactForm lang={lang} t={t} privacyLabel={m.legal.privacy} />
         </div>
       </section>
 

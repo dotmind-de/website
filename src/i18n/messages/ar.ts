@@ -120,6 +120,12 @@ export const ar: Messages = {
     languages: "اللغات",
     backToTop: "العودة للأعلى",
   },
+  legal: {
+    label: "قانوني",
+    imprint: "البيانات القانونية",
+    privacy: "سياسة الخصوصية",
+    germanOnly: "تُنشر البيانات القانونية وسياسة الخصوصية باللغة الألمانية، وهي اللغة المُلزِمة.",
+  },
   about: {
     label: "نبذة عني",
     lines: [

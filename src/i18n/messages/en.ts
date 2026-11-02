@@ -124,6 +124,13 @@ export const en = {
     languages: "Languages",
     backToTop: "Back to top",
   },
+  legal: {
+    label: "Legal",
+    imprint: "Legal notice",
+    privacy: "Privacy policy",
+    /** Shown on the legal pages in every language except German. */
+    germanOnly: "The legal notice and privacy policy are published in German, the binding language.",
+  },
   about: {
     label: "About",
     lines: [

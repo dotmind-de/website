@@ -1,89 +1,78 @@
 # Hosting dotmind.de
 
-Recommendation: one small **Hetzner Cloud** server in Germany with **Caddy** as the web server. It serves the coming-soon page now and the Next.js site later (FRONTEND-PLAN §9.7 assumes a single EU Node server), with automatic HTTPS. Data stays in Germany, which keeps the „Gehostet in der EU" promise true.
+The Next.js site runs on one small **netcup** VPS in Nürnberg. **Caddy** sits in front of it and handles HTTPS. Data stays in Germany, which keeps the „Gehostet in der EU" promise true.
 
 | | Choice |
 | --- | --- |
-| Provider | Hetzner Online GmbH, Gunzenhausen (data centres Nürnberg / Falkenstein) |
-| Server | Cloud server **CX22** (2 vCPU, 4 GB RAM), Ubuntu 24.04, location Nürnberg or Falkenstein. Roughly 4–6 €/month; check the current price. Enable backups (+20 %). |
-| Web server | Caddy (automatic Let's Encrypt certificates) |
-| Email | Not on this server. Use a separate EU mail provider (e.g. mailbox.org) or your registrar's mailboxes. Changing the website's A records doesn't touch your MX records. |
+| Provider | netcup GmbH, Karlsruhe. Data processing agreement (AVV) concluded in the CCP under Master Data → Order processing |
+| Server | **VPS pico G11.5s**: 1 vCore, 1 GB RAM, 30 GB SSD, location Nürnberg (guaranteed). €2.21/month, 12-month term |
+| OS | Debian 13 (trixie) |
+| Address | `62.83.77.218`, `2a03:4000:f:13a9:64a9:b2ff:fea2:df3e` (hostname `dotmind`) |
+| Web server | Caddy 2 (automatic Let's Encrypt certificates) |
+| App | Node.js 24 LTS, running the Next.js `standalone` build as the systemd service `dotmind` |
+| Domain and email | checkdomain. The domain is attached to the „Mail M" package, which also carries the `reza@dotmind.de` mailbox |
 
-## 1. Server
+## Access
 
-1. Create a Hetzner Cloud account and project, add your SSH key.
-2. Create the server (CX22, Ubuntu 24.04, Nürnberg or Falkenstein, backups on).
-3. In the Hetzner console, sign the data processing agreement (Auftragsverarbeitungsvertrag) under account → data protection.
+SSH accepts keys only; password login is off. The shortcut lives in `~/.ssh/config` on the Mac:
 
-## 2. DNS (at your domain registrar)
+```
+Host dotmind
+  HostName 62.83.77.218
+  User root
+  IdentityFile ~/.ssh/dotmind_netcup
+```
 
-| Type | Name | Value |
-| --- | --- | --- |
-| A | `@` | server IPv4 |
-| AAAA | `@` | server IPv6 |
-| A | `www` | server IPv4 |
-| AAAA | `www` | server IPv6 |
+`ssh dotmind` connects. The key's passphrase is in the macOS Keychain.
 
-## 3. Caddy and the coming-soon page
-
-On the server:
+## Deploying
 
 ```bash
-apt update && apt upgrade -y
-apt install -y debian-keyring debian-archive-keyring apt-transport-https curl ufw
-curl -1sLf 'https://dl.cloudsmith.io/public/caddy/stable/gpg.key' | gpg --dearmor -o /usr/share/keyrings/caddy-stable-archive-keyring.gpg
-curl -1sLf 'https://dl.cloudsmith.io/public/caddy/stable/debian.deb.txt' | tee /etc/apt/sources.list.d/caddy-stable.list
-apt update && apt install -y caddy
-ufw allow OpenSSH && ufw allow 80 && ufw allow 443 && ufw --force enable
-mkdir -p /var/www/dotmind
+scripts/deploy.sh
 ```
 
-From your Mac, in the project folder:
+The script builds on the Mac (the 1 GB server is too small for `next build`). It also swaps in sharp's Linux binaries and uploads the bundle to `/srv/dotmind/releases/<timestamp>`. Then it points `/srv/dotmind/current` at the new release, restarts the service and checks that `/en` answers. The last three releases are kept.
+
+Roll back to an older release:
 
 ```bash
-scp -r coming-soon/* root@SERVER_IP:/var/www/dotmind/
+ssh dotmind 'ls /srv/dotmind/releases'
+```
+```bash
+ssh dotmind 'ln -sfn /srv/dotmind/releases/<older> /srv/dotmind/current && systemctl restart dotmind'
 ```
 
-`/etc/caddy/Caddyfile` on the server:
+## Server layout
 
-```caddy
-www.dotmind.de {
-	redir https://dotmind.de{uri} permanent
-}
+| Path | What |
+| --- | --- |
+| `/srv/dotmind/current` | Live release (symlink), run by the system user `dotmind` |
+| `/etc/dotmind/env` | Runtime settings and the SMTP password for the contact form (`root:dotmind`, mode 640). After editing: `systemctl restart dotmind` |
+| `/etc/systemd/system/dotmind.service` | The app service: listens on `127.0.0.1:3000`, restarts automatically, memory capped at 600 MB |
+| `/etc/caddy/Caddyfile` | `www` → apex redirect, reverse proxy, security headers |
+| `/var/log/caddy/dotmind.log` | Access log, kept 7 days (matches the privacy policy) |
 
-dotmind.de {
-	root * /var/www/dotmind
-	encode zstd gzip
-	file_server
-	header {
-		Strict-Transport-Security "max-age=31536000; includeSubDomains"
-		X-Content-Type-Options "nosniff"
-		Referrer-Policy "strict-origin-when-cross-origin"
-		-Server
-	}
-	log {
-		output file /var/log/caddy/dotmind.log {
-			roll_keep_for 168h
-		}
-	}
-}
+Caddy sends `X-Forwarded-Proto: http` to the app on purpose. TLS ends at Caddy, and with `https` the German-default rewrite in `src/proxy.ts` would target `https://localhost:3000` and fail with a 500.
+
+Hardening: ufw allows only 22, 80, 443 (tcp) and 443 (udp). Unattended security upgrades run daily. There's 2 GB of swap, and journald is capped at 200 MB / 7 days.
+
+Useful commands:
+
+```bash
+ssh dotmind 'systemctl status dotmind caddy --no-pager'
+```
+```bash
+ssh dotmind 'journalctl -u dotmind -n 50 --no-pager'
 ```
 
-Then `systemctl reload caddy`. HTTPS is issued automatically once DNS points to the server. Logs are kept for 7 days, which matches the privacy policy.
+## DNS (checkdomain)
 
-## 4. Before going live
+In the checkdomain customer area: Domains → dotmind.de → checkdomain Nameserver.
 
-- `coming-soon/impressum/index.html`: fill in or remove the USt-IdNr. line.
-- `coming-soon/datenschutz/index.html`: replace the hosting placeholder with the real provider and check the log retention. Have both legal texts checked (lawyer or a reviewed generator); the drafts are not legal advice.
-- Regenerate after edits: the pages are plain HTML, so edit them directly.
+- **Haupt-IP-Adresse:** IPv4 `62.83.77.218`, IPv6 `2a03:4000:f:13a9:64a9:b2ff:fea2:df3e`. This field controls the apex A record. If it still holds the old webspace IP, the domain resolves to both servers.
+- **Profi-Einstellungen:** A and AAAA for `dotmind.de` and `www.dotmind.de` point to the same addresses. The SPF TXT record stays.
+- **E-Mail Empfang:** keep „Über checkdomain". MX (`mx03`/`mx04.secure-mailgate.com`) is managed there and can't be edited as a Profi record.
 
-## 5. Later: the Next.js site
+## Moving to a bigger server
 
-Build with `output: "standalone"`, run it as a systemd service (or with Coolify) on port 3000, and change the `dotmind.de` block to:
-
-```caddy
-dotmind.de {
-	encode zstd gzip
-	reverse_proxy localhost:3000
-}
-```
+Set up the new server with the steps above (Caddy, Node 24, the `dotmind` user, `/etc/dotmind/env`, the service unit). Then point the `dotmind` SSH host at it and run `scripts/deploy.sh`. Finally change the Haupt-IP-Adresse and the Profi records at checkdomain. Nothing else lives on the server.

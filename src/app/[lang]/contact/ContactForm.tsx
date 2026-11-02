@@ -15,13 +15,13 @@ import { BUDGETS, PROJECT_TYPES, TIMELINES, type Field, type InquiryState } from
 type T = Messages["contact"];
 
 /** Project inquiry: works without JavaScript; with it, errors and success render in place. */
-export function ContactForm({ lang, t }: { lang: Locale; t: T }) {
+export function ContactForm({ lang, t, privacyLabel }: { lang: Locale; t: T; privacyLabel: string }) {
   // Remounting the form gives a clean slate for "send another inquiry".
   const [round, setRound] = useState(0);
-  return <InquiryForm key={round} lang={lang} t={t} onReset={() => setRound((r) => r + 1)} />;
+  return <InquiryForm key={round} lang={lang} t={t} privacyLabel={privacyLabel} onReset={() => setRound((r) => r + 1)} />;
 }
 
-function InquiryForm({ lang, t, onReset }: { lang: Locale; t: T; onReset: () => void }) {
+function InquiryForm({ lang, t, privacyLabel, onReset }: { lang: Locale; t: T; privacyLabel: string; onReset: () => void }) {
   const [state, action, pending] = useActionState<InquiryState, FormData>(sendInquiry, { status: "idle" });
   const started = useRef<HTMLInputElement>(null);
   const firstSeen = useRef(0);
@@ -123,7 +123,10 @@ function InquiryForm({ lang, t, onReset }: { lang: Locale; t: T; onReset: () => 
 
       <div className="flex flex-col gap-6 border-t border-line pt-8 md:flex-row md:items-center md:justify-between">
         <p id="form-note" className="max-w-md text-sm text-muted">
-          {f.privacy}
+          {f.privacy}{" "}
+          <Link href={localePath(lang, "/datenschutz")} className="link-underline text-bone">
+            {privacyLabel}
+          </Link>
         </p>
         <button
           type="submit"

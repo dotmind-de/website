@@ -120,6 +120,12 @@ export const de: Messages = {
     languages: "Sprachen",
     backToTop: "Nach oben",
   },
+  legal: {
+    label: "Rechtliches",
+    imprint: "Impressum",
+    privacy: "Datenschutz",
+    germanOnly: "",
+  },
   about: {
     label: "Über mich",
     lines: [

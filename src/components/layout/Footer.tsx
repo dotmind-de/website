@@ -97,9 +97,19 @@ export async function Footer() {
       </div>
 
       <div className="shell mt-20 flex flex-wrap items-center justify-between gap-4 border-t border-line py-6 text-sm text-muted">
-        <p>
-          © {year} {site.name} · {site.founder}
-        </p>
+        <div className="flex flex-wrap items-center gap-x-6 gap-y-2">
+          <p>
+            © {year} {site.name} · {site.founder}
+          </p>
+          <nav aria-label={m.legal.label} className="flex gap-5">
+            <Link href={href("/impressum")} className="link-underline hover:text-bone">
+              {m.legal.imprint}
+            </Link>
+            <Link href={href("/datenschutz")} className="link-underline hover:text-bone">
+              {m.legal.privacy}
+            </Link>
+          </nav>
+        </div>
         <LanguageList
           lang={lang}
           label={t.languages}

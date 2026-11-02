@@ -77,6 +77,7 @@ export type Project = {
   kind: ProjectKind;
   links: {
     live: string | null;
+    /** Public repository. `null` = not public; no link is shown. */
     github: string | null;
     other?: ProjectLink[];
   };
