@@ -1,7 +1,7 @@
 # Gallery inbox
 
 Drop raw material for new gallery entries here, one folder per project. Raw files are not committed;
-Claude optimises them into `public/projects/<slug>/` and adds the entry to `src/content/projects.ts`.
+They are optimised into `public/projects/<slug>/` and added to `src/content/projects.ts`.
 
 ```
 assets-inbox/

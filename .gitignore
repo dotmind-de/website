@@ -49,3 +49,9 @@ next-env.d.ts
 /assets-inbox/*
 !/assets-inbox/README.md
 !/assets-inbox/_beispiel-projekt/
+
+# local editor and assistant tooling
+.claude/
+.impeccable/
+CLAUDE.md
+AGENTS.md
