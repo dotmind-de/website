@@ -185,6 +185,7 @@ export const de: Messages = {
     details: "Details",
     basedIn: "Standort",
     languagesLabel: "Sprachen",
+    spokenLanguages: "Deutsch, Englisch, Persisch, Arabisch",
     cv: "Lebenslauf",
     downloadCv: "Lebenslauf herunterladen",
     dates: "Zeitraum",

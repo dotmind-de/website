@@ -190,6 +190,7 @@ export const en = {
     details: "Details",
     basedIn: "Based in",
     languagesLabel: "Languages",
+    spokenLanguages: "German, English, Persian, Arabic",
     cv: "CV",
     downloadCv: "Download CV",
     dates: "Dates",

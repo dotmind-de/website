@@ -185,6 +185,7 @@ export const tr: Messages = {
     details: "Detaylar",
     basedIn: "Konum",
     languagesLabel: "Diller",
+    spokenLanguages: "Almanca, İngilizce, Farsça, Arapça",
     cv: "Özgeçmiş",
     downloadCv: "Özgeçmişi indir",
     dates: "Tarihler",

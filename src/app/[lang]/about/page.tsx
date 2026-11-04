@@ -3,11 +3,9 @@ import { ClosingCTA } from "@/components/home/ClosingCTA";
 import { Timeline } from "@/components/home/Timeline";
 import { Reveal } from "@/components/motion/Reveal";
 import { ScrollText } from "@/components/motion/ScrollText";
-import { ArrowLink } from "@/components/ui/Button";
 import { JsonLd } from "@/components/ui/JsonLd";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { AiBadge } from "@/components/ui/AiBadge";
-import { Placeholder } from "@/components/ui/Placeholder";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { site } from "@/content/site";
 import { localeMeta, localePath } from "@/i18n/config";
@@ -110,7 +108,7 @@ export default async function AboutPage() {
       <section aria-labelledby="journey-title" className="shell py-24 md:py-36">
         <SectionHeading id="journey-title" index="02" label={t.journeyLabel} title={toSegments(t.journeyTitle)} />
         <div className="mt-16 md:mt-24">
-          <Timeline journey={journey} datesLabel={t.dates} />
+          <Timeline journey={journey} />
         </div>
       </section>
 
@@ -127,15 +125,7 @@ export default async function AboutPage() {
             </div>
             <div>
               <dt className="t-label text-muted">{t.languagesLabel}</dt>
-              <dd className="mt-3 text-lg">
-                {site.languages?.join(", ") ?? <Placeholder>{t.languagesLabel}</Placeholder>}
-              </dd>
-            </div>
-            <div>
-              <dt className="t-label text-muted">{t.cv}</dt>
-              <dd className="mt-3 text-lg">
-                {site.cv ? <ArrowLink href={site.cv}>{t.downloadCv}</ArrowLink> : <Placeholder>{t.cv}</Placeholder>}
-              </dd>
+              <dd className="mt-3 text-lg">{t.spokenLanguages}</dd>
             </div>
           </dl>
         </div>

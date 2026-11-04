@@ -185,6 +185,7 @@ export const ar: Messages = {
     details: "تفاصيل",
     basedIn: "المقر",
     languagesLabel: "اللغات",
+    spokenLanguages: "الألمانية، الإنجليزية، الفارسية، العربية",
     cv: "السيرة الذاتية",
     downloadCv: "تنزيل السيرة الذاتية",
     dates: "التواريخ",

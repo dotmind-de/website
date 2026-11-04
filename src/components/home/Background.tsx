@@ -19,7 +19,7 @@ export async function Background() {
         aside={<ArrowLink href={href("/about")}>{t.more}</ArrowLink>}
       />
       <div className="mt-16 md:mt-24">
-        <Timeline journey={journey} datesLabel={m.about.dates} />
+        <Timeline journey={journey} />
       </div>
     </section>
   );

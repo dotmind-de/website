@@ -185,6 +185,7 @@ export const fa: Messages = {
     details: "جزئیات",
     basedIn: "محل",
     languagesLabel: "زبان‌ها",
+    spokenLanguages: "آلمانی، انگلیسی، فارسی، عربی",
     cv: "رزومه",
     downloadCv: "دانلود رزومه",
     dates: "تاریخ‌ها",

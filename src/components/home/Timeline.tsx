@@ -2,7 +2,6 @@
 
 import { motion } from "motion/react";
 import { Sparkle } from "@/components/ui/Icons";
-import { Placeholder } from "@/components/ui/Placeholder";
 import type { JourneyStage } from "@/content/profile";
 import { ease, reveal, staggerContainer, viewport } from "@/lib/motion";
 
@@ -13,7 +12,7 @@ import { ease, reveal, staggerContainer, viewport } from "@/lib/motion";
 /** Index of the "Artificial Intelligence" stage. */
 const AI = 4;
 
-export function Timeline({ journey, datesLabel }: { journey: JourneyStage[]; datesLabel: string }) {
+export function Timeline({ journey }: { journey: JourneyStage[] }) {
   return (
     <motion.ol
       className="relative grid gap-y-12 xl:grid-cols-6 xl:gap-x-8"
@@ -44,7 +43,7 @@ export function Timeline({ journey, datesLabel }: { journey: JourneyStage[]; dat
           />
           <p className="t-label flex flex-wrap items-center gap-2 text-muted">
             <span className="text-ember">0{n + 1}</span>
-            {stage.period ?? <Placeholder>{datesLabel}</Placeholder>}
+            {stage.period}
           </p>
           <h3 className="mt-4 flex items-center gap-2 text-xl font-semibold tracking-[-0.025em] md:text-2xl">
             {stage.title}
